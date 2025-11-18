@@ -46,3 +46,10 @@ def predict(
     prediction = model.predict(dmatrix)[0]
 
     return {"prediction": float(prediction)}
+    }])
+
+    dmatrix = xgb.DMatrix(df)
+    prediction = model.predict(dmatrix)[0]
+
+    return {"prediction": float(prediction)}
+
