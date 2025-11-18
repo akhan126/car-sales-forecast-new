@@ -3,111 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Car Sales Forecast</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            padding: 40px;
-        }
 
-        h1 {
-            text-align: center;
-            color: #222;
-        }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f7;
+        padding: 40px;
+    }
 
-        .card {
-            background: white;
-            padding: 25px;
-            max-width: 450px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+    .card {
+        background: white;
+        padding: 25px;
+        max-width: 450px;
+        margin: auto;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 12px;
-        }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            margin-top: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #0078ff;
-            border: none;
-            color: white;
-            margin-top: 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #005fcc;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 22px;
-            text-align: center;
-            font-weight: bold;
-            color: #333;
-        }
-    </style>
+    button {
+        width: 100%;
+        padding: 15px;
+        background: #0066ff;
+        border: none;
+        color: white;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+</style>
 </head>
+
 <body>
 
-    <h1>Car Sales Forecast</h1>
+<h1>Car Sales Forecast</h1>
 
-    <div class="card">
-        <form id="predictForm">
+<div class="card">
 
-            <label>Sales Lag 1</label>
-            <input type="number" name="lag1" required>
+<form action="/predict" method="post">
 
-            <label>Sales Lag 2</label>
-            <input type="number" name="lag2" required>
+    <label>Sales Lag 1</label>
+    <input type="number" step="any" name="lag1" required>
 
-            <label>Sales Lag 3</label>
-            <input type="number" name="lag3" required>
+    <label>Sales Lag 2</label>
+    <input type="number" step="any" name="lag2" required>
 
-            <label>Sales Lag 4</label>
-            <input type="number" name="lag4" required>
+    <label>Sales Lag 3</label>
+    <input type="number" step="any" name="lag3" required>
 
-            <label>Sales Lag 5</label>
-            <input type="number" name="lag5" required>
+    <label>Sales Lag 4</label>
+    <input type="number" step="any" name="lag4" required>
 
-            <label>Sales Lag 6</label>
-            <input type="number" name="lag6" required>
+    <label>Sales Lag 5</label>
+    <input type="number" step="any" name="lag5" required>
 
-            <button type="submit">Predict Sales</button>
-        </form>
+    <label>Sales Lag 6</label>
+    <input type="number" step="any" name="lag6" required>
 
-        <div id="result"></div>
-    </div>
+    <button type="submit">Predict Sales</button>
 
-    <script>
-        document.getElementById("predictForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+</form>
 
-            const formData = new FormData(event.target);
+</div>
 
-            const response = await fetch("/predict", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await response.json();
-
-            document.getElementById("result").innerText =
-                "Predicted Next-Month Sales: " + Math.round(data.prediction).
-
+</body>
+</html>
                 
