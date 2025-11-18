@@ -1,43 +1,48 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse
+import xgboost as xgb
 import numpy as np
-import os
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from xgboost import XGBRegressor
-
-# Load model
-model_path = os.path.join(os.path.dirname(__file__), "model", "model.json")
-model = XGBRegressor()
-model.load_model(model_path)
+import pandas as pd
+from pathlib import Path
 
 app = FastAPI()
 
-# Allow all CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Load pretrained XGBoost model (Booster)
+model = xgb.Booster()
+model.load_model("model/model.json")
 
-class SalesInput(BaseModel):
-    sales: list[float]   # exactly 6 values
+# HTML file path
+BASE_DIR = Path(__file__).resolve().parent
+HTML_FILE = BASE_DIR / "frontend" / "index.html"
 
-# Serve frontend
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
-@app.get("/")
-def serve_frontend():
-    return FileResponse(os.path.join("frontend", "index.html"))
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    try:
+        content = HTML_FILE.read_text()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Error loading HTML</h1><p>{e}</p>")
 
 @app.post("/predict")
-async def predict_sales(input: SalesInput):
-    if len(input.sales) != 6:
-        return {"error": "Please provide exactly 6 values"}
+def predict(
+    lag1: float = Form(...),
+    lag2: float = Form(...),
+    lag3: float = Form(...),
+    lag4: float = Form(...),
+    lag5: float = Form(...),
+    lag6: float = Form(...)
+):
+    # Build DataFrame just like training
+    df = pd.DataFrame([{
+        "lag_1": lag1,
+        "lag_2": lag2,
+        "lag_3": lag3,
+        "lag_4": lag4,
+        "lag_5": lag5,
+        "lag_6": lag6
+    }])
 
-    arr = np.array(input.sales).reshape(1, -1)
-    pred = model.predict(arr)[0]
+    dmatrix = xgb.DMatrix(df)
+    prediction = model.predict(dmatrix)[0]
 
-    return {"prediction": float(pred)}
+    return {"prediction": float(prediction)}
