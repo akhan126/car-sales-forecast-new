@@ -33,14 +33,13 @@ def predict(
     lag5: float = Form(...),
     lag6: float = Form(...)
 ):
-    # Build DataFrame just like training
     df = pd.DataFrame([{
-        "lag_1": lag1,
-        "lag_2": lag2,
-        "lag_3": lag3,
-        "lag_4": lag4,
-        "lag_5": lag5,
-        "lag_6": lag6
+        "Sales_Lag_1": lag1,
+        "Sales_Lag_2": lag2,
+        "Sales_Lag_3": lag3,
+        "Sales_Lag_4": lag4,
+        "Sales_Lag_5": lag5,
+        "Sales_Lag_6": lag6
     }])
 
     dmatrix = xgb.DMatrix(df)
